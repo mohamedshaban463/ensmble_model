@@ -1,4 +1,5 @@
 import os
+import pickle
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -375,3 +376,22 @@ for fold, (train_idx, val_idx) in enumerate(skf.split(OOF_train_opt, y_labels)):
 
 final_cv = roc_auc_score(y_labels, oof_meta_trans_opt)
 print(f"Level-1 Self-Attention Stacker CV ROC-AUC: {final_cv:.5f}")
+
+
+
+pipeline_artifacts = {
+    'target_encoder': target_enc,
+    'scaler': scaler,
+    'feature_names': all_cols,
+    'embed_dims': embed_dims,
+    'oof_meta_predictions': oof_meta_trans_opt,
+    'test_meta_predictions': pred_meta_trans_opt,
+    'final_cv_score': final_cv
+}
+
+# Save the dictionary to a .pkl file
+pickle_filepath = '/content/ensemble_pipeline.pkl'
+with open(pickle_filepath, 'wb') as f:
+    pickle.dump(pipeline_artifacts, f)
+
+print(f"Pipeline artifacts successfully saved to {pickle_filepath}")
